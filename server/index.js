@@ -1,9 +1,10 @@
-const express from "express";
-const cors from "cors";
-const dotenv from "dotenv";
-const connectDB from "./config/db.js";
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
+import upload from "./middleware/upload.js";
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,23 @@ app.get("/api/protected", protect, (req, res) => {
     user: req.user,
   });
 });
+
+
+app.post("/upload", upload.single("pdf"), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    res.json({
+      message: "PDF uploaded successfully",
+      file: req.file,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 
