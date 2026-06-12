@@ -11,6 +11,10 @@ import path from "path";
 import Document from "./models/Document.js";
 import fileRoutes from "./routes/fileRoutes.js";
 
+import signatureRoutes from "./routes/signatureRoutes.js";
+
+
+
 
 
 dotenv.config();
@@ -27,6 +31,8 @@ app.get("/whoami", (req, res) => {
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/signatures", signatureRoutes);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
