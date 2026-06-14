@@ -100,4 +100,30 @@ router.put("/:id/sign", async (req, res) => {
   }
 });
 
+router.get("/token/:token", async (req, res) => {
+  try {
+    const signature = await Signature.findOne({
+      token: req.params.token,
+    });
+
+    if (!signature) {
+      return res.status(404).json({
+        message: "Invalid token",
+      });
+    }
+
+    if (new Date() > signature.tokenExpires) {
+      return res.status(400).json({
+        message: "Token expired",
+      });
+    }
+
+    res.json(signature);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
 export default router;

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import crypto from "crypto";
 
 const signatureSchema = new mongoose.Schema(
   {
@@ -38,6 +39,16 @@ const signatureSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    token: {
+  type: String,
+  default: () => crypto.randomBytes(32).toString("hex"),
+},
+
+tokenExpires: {
+  type: Date,
+  default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+},
   },
   {
     timestamps: true,

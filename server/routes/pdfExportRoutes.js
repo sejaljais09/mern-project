@@ -12,6 +12,7 @@ router.post("/upload-signed-pdf", async (req, res) => {
   {
     resource_type: "raw",
     folder: "signed-pdfs",
+    chunk_size: 6000000,
     format: "pdf",
   },
   (error, result) => {
