@@ -34,9 +34,13 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 // 📥 GET ALL FILES (FOR DASHBOARD)
 router.get("/", async (req, res) => {
   try {
-    const files = await File.find().sort({ uploadedAt: -1 });
+    const files = await File.find();
+
+    console.log("FILES FOUND:", files);
+
     res.json(files);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 });

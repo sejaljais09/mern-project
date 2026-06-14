@@ -12,8 +12,8 @@ import Document from "./models/Document.js";
 import fileRoutes from "./routes/fileRoutes.js";
 
 import signatureRoutes from "./routes/signatureRoutes.js";
-
-
+import morgan from "morgan";
+import pdfExportRoutes from "./routes/pdfExportRoutes.js";
 
 
 
@@ -30,14 +30,13 @@ app.get("/whoami", (req, res) => {
 });
 
 app.use(cors());
-app.use(express.json());
-
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(morgan("dev"));
 app.use("/api/signatures", signatureRoutes);
-
+app.use("/api/pdf", pdfExportRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-
 app.use("/api/auth", authRoutes);
-
 app.use("/api/files", fileRoutes);
 
 
@@ -141,6 +140,14 @@ app.get("/test-file", (req, res) => {
 app.get("/debug", (req, res) => {
   res.json({
     uploadsFolder: path.resolve("uploads"),
+  });
+});
+
+app.use((err, req, res, next) => {
+  console.error("🔥 ERROR:", err);
+  res.status(500).json({
+    message: "Server Error",
+    error: err.message,
   });
 });
 

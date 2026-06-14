@@ -23,10 +23,20 @@ const signatureSchema = new mongoose.Schema(
       required: true,
     },
 
+    email: {
+      type: String,
+      required: true,
+    },
+
     status: {
       type: String,
       enum: ["pending", "signed"],
       default: "pending",
+    },
+
+    signatureImage: {
+      type: String,
+      default: "",
     },
   },
   {
