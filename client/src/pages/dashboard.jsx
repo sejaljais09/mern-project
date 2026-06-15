@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import AuditTrail from "../components/AuditTrail";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import "react-pdf/dist/Page/TextLayer.css";
@@ -34,8 +34,9 @@ function Dashboard() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [signatures, setSignatures] = useState([]);
  const [showPad, setShowPad] = useState(false);
-const [selectedSignature, setSelectedSignature] = useState(null);
-  const [dragging, setDragging] = useState(false);
+ const [selectedSignature, setSelectedSignature] = useState(null);
+ const [dragging, setDragging] = useState(false);
+ const [auditDoc, setAuditDoc] = useState(null);
 console.log("SIGNATURES:", signatures);
 
   useEffect(() => {
@@ -328,7 +329,14 @@ console.log("showPad =", showPad);
             }}
             onClick={async () => {
   setSelectedFile(doc.url);
-  setSelectedDocument(doc);
+  // setSelectedDocument(doc);
+  const res = await axios.get(
+  `http://localhost:5000/api/signatures/${doc._id}`
+);
+
+setAuditDoc(res.data);
+setSignatures(res.data);
+ setSelectedDocument(doc);
 
   try {
     const res = await axios.get(
@@ -372,6 +380,11 @@ console.log("showPad =", showPad);
       {/* RIGHT SIDE - PDF PREVIEW */}
       <div style={{ width: "60%" }}>
         <h2>👁️ PDF Preview</h2>
+        {selectedDocument && (
+  <div style={{ marginTop: "20px" }}>
+    <AuditTrail auditTrail={signatures} />
+  </div>
+)}
 
    {selectedFile ? (
   <div
@@ -450,7 +463,7 @@ return (
 
   {signatures.length > 0 && (
   <button
-    onClick={() => copySigningLink(signatures[0].token)}
+    onClick={() => copySigningLink(signatures[signatures.length-1]?.token)}
     style={{
       marginBottom: "10px",
       padding: "8px 12px",
@@ -462,6 +475,9 @@ return (
   >
     Copy Signing Link
   </button>
+
+  
+  
 )}
     <button
       onClick={downloadSignedPDF}
@@ -476,6 +492,34 @@ return (
     >
       Download Signed PDF
     </button>
+
+      <button
+  onClick={async () => {
+    try {
+      const latestSig = signatures[signatures.length - 1];
+
+      await axios.post(
+        `http://localhost:5000/api/signatures/${latestSig._id}/send-email`
+      );
+
+      alert("Email Sent!");
+    } catch (err) {
+      console.log(err);
+      alert("Email Failed");
+    }
+  }}
+  style={{
+    marginLeft: "10px",
+    marginBottom: "10px",
+    padding: "8px 12px",
+    background: "green",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+  }}
+>
+  Send Email
+</button>
 
     <button
       onClick={uploadSignedPDFToCloud}

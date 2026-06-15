@@ -13,16 +13,23 @@ function ExternalSign() {
   }, []);
 
   const fetchSignature = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:5000/api/signatures/token/${token}`
-      );
+  try {
+    console.log("TOKEN FROM URL:", token);
 
-      setSignature(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const res = await axios.get(
+      `http://localhost:5000/api/signatures/token/${token}`
+    );
+
+    console.log("API RESPONSE:", res.data);
+
+    setSignature(res.data);
+  } catch (err) {
+    console.log(
+      "FETCH ERROR:",
+      err.response?.data || err.message
+    );
+  }
+};
 
   const saveSignature = async (image) => {
     try {
