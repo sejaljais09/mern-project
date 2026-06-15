@@ -1,44 +1,42 @@
 import SignatureCanvas from "react-signature-canvas";
 import { useRef } from "react";
 
-function SignaturePad() {
+function SignaturePad({ onSave }) {
   const sigRef = useRef();
 
   const saveSignature = () => {
+    console.log("BUTTON CLICKED");
+
     const image = sigRef.current.toDataURL();
-   const saveSignature = async () => {
-  const image = sigRef.current.toDataURL();
 
-  try {
-    await axios.put(
-      "http://localhost:5000/api/signatures/123/sign",
-      {
-        signatureImage: image,
-      }
-    );
-
-    alert("Signature saved!");
-  } catch (err) {
-    console.log(err);
-  }
-};
+    console.log("IMAGE CREATED");
+    onSave(image);
   };
 
-  return (
-    <>
-      <SignatureCanvas
-        ref={sigRef}
-        canvasProps={{
-          width: 500,
-          height: 200,
-          className: "border",
-        }}
-      />
 
-      <button onClick={saveSignature}>
+   const handleSave = () => {
+  const dataURL = canvasRef.current.toDataURL("image/png");
+  onSave(dataURL);
+};
+  return (
+    <div className="signature-wrapper">
+      
+      <div className="signature-canvas-box">
+        <SignatureCanvas
+          ref={sigRef}
+          canvasProps={{
+            width: 500,
+            height: 200,
+            className: "signature-canvas",
+          }}
+        />
+      </div>
+
+      <button onClick={saveSignature} className="save-btn">
         Save Signature
       </button>
-    </>
+
+    </div>
   );
 }
 
