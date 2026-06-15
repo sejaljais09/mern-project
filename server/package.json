@@ -22,6 +22,7 @@
     "mongoose": "^9.7.0",
     "morgan": "^1.11.0",
     "multer": "^2.1.1",
+    "nodemailer": "^9.0.0",
     "pdf-lib": "^1.17.1",
     "react-signature-canvas": "^1.1.0-alpha.2",
     "streamifier": "^0.1.1"

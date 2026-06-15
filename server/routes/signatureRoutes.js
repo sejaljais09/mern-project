@@ -1,7 +1,7 @@
 import express from "express";
 import Signature from "../models/signature.js";
 import { body, validationResult } from "express-validator";
-
+import { sendSigningEmail } from "../utils/sendEmail.js";
 
 const router = express.Router();
 
@@ -124,6 +124,35 @@ router.get("/token/:token", async (req, res) => {
 
     res.json(signature);
   } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+
+router.post("/:id/send-email", async (req, res) => {
+  try {
+    const signature = await Signature.findById(req.params.id);
+
+    if (!signature) {
+      return res.status(404).json({
+        message: "Signature not found",
+      });
+    }
+
+    await sendSigningEmail(
+      signature.email,
+      signature.token
+    );
+
+    res.json({
+      message: "Email sent successfully",
+    });
+
+  } catch (error) {
+    console.log("EMAIL ERROR:", error);
+    console.log("MESSAGE:", error.message);
     res.status(500).json({
       message: error.message,
     });

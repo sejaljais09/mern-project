@@ -1,9 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 
 import cors from "cors";
-import dotenv from "dotenv";
-
-
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import { protect } from "./middleware/authMiddleware.js";
@@ -19,7 +18,7 @@ import pdfExportRoutes from "./routes/pdfExportRoutes.js";
 
 
 
-dotenv.config();
+
 connectDB();
 
 console.log("INDEX ENV:", process.env.CLOUD_NAME);
