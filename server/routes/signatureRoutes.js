@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
       signer,
       email,
     });
-
+   console.log("NEW SIGNATURE:", signature);
     res.status(201).json(signature);
   } catch (error) {
     console.log("❌ ERROR:", error.message);
@@ -101,10 +101,14 @@ router.put("/:id/sign", async (req, res) => {
 });
 
 router.get("/token/:token", async (req, res) => {
+  console.log("TOKEN ROUTE HIT:", req.params.token);
+
   try {
     const signature = await Signature.findOne({
       token: req.params.token,
     });
+
+    console.log("SIGNATURE FOUND:", signature);
 
     if (!signature) {
       return res.status(404).json({
