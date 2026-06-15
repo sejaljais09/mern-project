@@ -2,7 +2,7 @@ import express from "express";
 import Signature from "../models/signature.js";
 import { body, validationResult } from "express-validator";
 import { sendSigningEmail } from "../utils/sendEmail.js";
-
+import getIp from "../middleware/getIp.js";
 const router = express.Router();
 
 // router.post(
@@ -71,32 +71,41 @@ router.get("/:documentId", async (req, res) => {
 
 
 
-
-router.put("/:id/sign", async (req, res) => {
+router.put("/:id/sign", getIp, async (req, res) => {
   try {
-    console.log("PUT HIT");
-    console.log("ID:", req.params.id);
-    console.log("BODY:", req.body);
+    console.log("🔥 SIGN ROUTE HIT");
 
     const { signatureImage } = req.body;
 
-    const updated = await Signature.findByIdAndUpdate(
-      req.params.id,
-      {
-        signatureImage,
-        status: "signed",
-      },
-      { new: true }
-    );
+    const signature = await Signature.findById(req.params.id);
 
-    console.log("UPDATED:", updated);
+    if (!signature) {
+      return res.status(404).json({ message: "Not found" });
+    }
 
-    res.json(updated);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: error.message,
+    console.log("BEFORE AUDIT:", signature.auditTrail);
+
+    signature.signatureImage = signatureImage;
+    signature.status = "signed";
+    signature.signedAt = new Date();
+    signature.ipAddress = req.clientIp || "unknown";
+
+    // 🔥 AUDIT TRAIL PUSH
+    signature.auditTrail.push({
+      action: "SIGNED",
+      ip: req.clientIp || "unknown",
+      user: signature.email,
+      timestamp: new Date(),
     });
+
+    await signature.save();
+
+    console.log("AFTER AUDIT:", signature.auditTrail);
+
+    res.json(signature);
+  } catch (error) {
+    console.log("ERROR:", error.message);
+    res.status(500).json({ message: error.message });
   }
 });
 

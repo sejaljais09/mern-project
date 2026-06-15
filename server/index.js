@@ -21,7 +21,7 @@ import pdfExportRoutes from "./routes/pdfExportRoutes.js";
 
 connectDB();
 
-console.log("INDEX ENV:", process.env.CLOUD_NAME);
+
 const app = express();
 
 app.get("/whoami", (req, res) => {
@@ -40,7 +40,7 @@ app.use("/api/pdf", pdfExportRoutes);
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
-
+app.use("/signature", signatureRoutes);
 
 
 

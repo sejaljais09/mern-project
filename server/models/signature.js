@@ -49,6 +49,30 @@ tokenExpires: {
   type: Date,
   default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
 },
+
+signedAt: {
+  type: Date,
+},
+
+ipAddress: {
+  type: String,
+  default: "",
+},
+
+auditTrail: [
+  {
+    action: {
+      type: String,
+      enum: ["VIEWED", "SIGNED", "DOWNLOADED", "LINK_OPENED"],
+    },
+    ip: String,
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+    user: String,
+  },
+],
   },
   {
     timestamps: true,
