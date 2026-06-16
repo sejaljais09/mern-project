@@ -15,7 +15,7 @@ import fileRoutes from "./routes/fileRoutes.js";
 import signatureRoutes from "./routes/signatureRoutes.js";
 import morgan from "morgan";
 import pdfExportRoutes from "./routes/pdfExportRoutes.js";
-
+import auditRoutes from "./routes/auditRoutes.js";
 
 
 
@@ -41,7 +41,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/signature", signatureRoutes);
-
+app.use("/api/audit", auditRoutes);
 
 
 app.get("/", (req, res) => {

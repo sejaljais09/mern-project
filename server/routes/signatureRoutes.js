@@ -30,7 +30,7 @@ const router = express.Router();
 // );
 router.post("/", async (req, res) => {
   try {
-    const { documentId, x, y, signer, email } = req.body;
+    const { documentId, x, y, signer, email ,pageNumber} = req.body;
 
     console.log("🔥 CLEAN BODY:", req.body);
 
@@ -47,6 +47,7 @@ router.post("/", async (req, res) => {
       y,
       signer,
       email,
+      pageNumber,
     });
    console.log("NEW SIGNATURE:", signature);
     res.status(201).json(signature);
@@ -109,6 +110,41 @@ router.put("/:id/sign", getIp, async (req, res) => {
   }
 });
 
+
+//router for reject
+router.put("/:id/reject", getIp, async (req, res) => {
+  try {
+    const signature = await Signature.findById(req.params.id);
+
+    if (!signature) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    if (signature.status === "signed") {
+      return res.status(400).json({
+        message: "Already signed, cannot reject",
+      });
+    }
+
+    const { reason } = req.body; // ✅ required
+
+    signature.status = "rejected";
+    signature.rejectionReason = reason || "No reason provided";
+
+    signature.auditTrail.push({
+      action: "REJECTED",
+      ip: req.clientIp || "unknown",
+      user: signature.email,
+      timestamp: new Date(),
+    });
+
+    await signature.save();
+
+    res.json(signature);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 router.get("/token/:token", async (req, res) => {
   console.log("TOKEN ROUTE HIT:", req.params.token);
 

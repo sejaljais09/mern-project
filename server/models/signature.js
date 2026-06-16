@@ -31,7 +31,7 @@ const signatureSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "signed"],
+      enum: ["pending", "signed", "rejected"],
       default: "pending",
     },
 
@@ -63,7 +63,7 @@ auditTrail: [
   {
     action: {
       type: String,
-      enum: ["VIEWED", "SIGNED", "DOWNLOADED", "LINK_OPENED"],
+      enum: ["VIEWED", "SIGNED", "DOWNLOADED", "LINK_OPENED", "REJECTED"],
     },
     ip: String,
     timestamp: {
@@ -73,6 +73,10 @@ auditTrail: [
     user: String,
   },
 ],
+rejectionReason: {
+  type: String,
+  default: "",
+},
   },
   {
     timestamps: true,
