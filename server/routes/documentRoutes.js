@@ -1,5 +1,5 @@
 import express from "express";
-import Document from "../models/Document.js";
+import Document from "../models/document.js";
 import fs from "fs";
 import path from "path";
 
