@@ -120,27 +120,29 @@ router.put("/:id/reject", getIp, async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    if (signature.status === "signed") {
-      return res.status(400).json({
-        message: "Already signed, cannot reject",
-      });
-    }
+    // if (signature.status === "signed") {
+    //   return res.status(400).json({
+    //     message: "Already signed, cannot reject",
+    //   });
+    // }
 
     const { reason } = req.body; // ✅ required
 
-    signature.status = "rejected";
-    signature.rejectionReason = reason || "No reason provided";
+    // signature.status = "rejected";
+    // signature.rejectionReason = reason || "No reason provided";
 
-    signature.auditTrail.push({
-      action: "REJECTED",
-      ip: req.clientIp || "unknown",
-      user: signature.email,
-      timestamp: new Date(),
-    });
+    // signature.auditTrail.push({
+    //   action: "REJECTED",
+    //   ip: req.clientIp || "unknown",
+    //   user: signature.email,
+    //   timestamp: new Date(),
+    // });
 
-    await signature.save();
-
-    res.json(signature);
+  
+    await Signature.findByIdAndDelete(req.params.id);
+    res.json({
+  message: "Signature deleted successfully",
+});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
