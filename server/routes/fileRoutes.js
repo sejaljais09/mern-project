@@ -1,6 +1,6 @@
 import express from "express";
 import upload from "../middleware/upload.js";
-import File from "../models/File.js";
+import File from "../models/file.js";
 
 const router = express.Router();
 
