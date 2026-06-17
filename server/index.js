@@ -9,7 +9,7 @@ import { protect } from "./middleware/authMiddleware.js";
 import upload from "./middleware/upload.js";
 import path from "path";
 
-import Document from "./models/Document.js";
+import Document from "./models/document.js";
 import fileRoutes from "./routes/fileRoutes.js";
 
 import signatureRoutes from "./routes/signatureRoutes.js";
