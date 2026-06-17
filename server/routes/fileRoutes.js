@@ -15,7 +15,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const newFile = await File.create({
       filename: req.file.filename,
       originalName: req.file.originalname,
-      url: `http://localhost:5000/uploads/${req.file.filename}`,
+      url: `https://document-signature-api.onrender.com/uploads/${req.file.filename}`,
       path: req.file.path,
       size: req.file.size,
     });
