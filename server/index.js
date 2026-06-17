@@ -16,13 +16,15 @@ import signatureRoutes from "./routes/signatureRoutes.js";
 import morgan from "morgan";
 import pdfExportRoutes from "./routes/pdfExportRoutes.js";
 import auditRoutes from "./routes/auditRoutes.js";
-
+import documentRoutes from "./routes/documentRoutes.js";
 
 
 connectDB();
 
 
 const app = express();
+
+const __dirname = process.cwd();
 
 app.get("/whoami", (req, res) => {
   res.json({
@@ -37,12 +39,12 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morgan("dev"));
 app.use("/api/signatures", signatureRoutes);
 app.use("/api/pdf", pdfExportRoutes);
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "server/uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/signature", signatureRoutes);
 app.use("/api/audit", auditRoutes);
-
+app.use("/api/documents", documentRoutes);
 
 app.get("/", (req, res) => {
   res.json({
@@ -70,6 +72,8 @@ app.get("/api/protected", protect, (req, res) => {
     user: req.user,
   });
 });
+
+
 
 
 app.post("/upload", upload.single("pdf"), (req, res) => {
@@ -145,6 +149,11 @@ app.get("/debug", (req, res) => {
   });
 });
 
+app.use((req, res, next) => {
+  console.log("REQUEST:", req.method, req.url);
+  next();
+});
+
 app.use((err, req, res, next) => {
   console.error("🔥 ERROR:", err);
   res.status(500).json({
@@ -152,6 +161,8 @@ app.use((err, req, res, next) => {
     error: err.message,
   });
 });
+
+
 
 
 const PORT = process.env.PORT || 5000;
