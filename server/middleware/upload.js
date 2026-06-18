@@ -1,5 +1,5 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+
 import cloudinary from "../config/cloudinary.js";
 // import path from "path";
 // import fs from "fs";
@@ -22,13 +22,7 @@ import cloudinary from "../config/cloudinary.js";
 //   },
 // });
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "pdfs",
-    resource_type: "raw",
-  },
-});
+
 
 
 
@@ -43,10 +37,16 @@ const fileFilter = (req, file, cb) => {
 
 // upload middleware
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+  storage: multer.memoryStorage(),
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF files are allowed!"), false);
+    }
+  },
   limits: {
-    fileSize: 50 * 1024 * 1024, // 10MB limit
+    fileSize: 50 * 1024 * 1024,
   },
 });
 

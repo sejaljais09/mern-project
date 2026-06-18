@@ -2,8 +2,27 @@ import express from "express";
 import Document from "../models/document.js";
 import fs from "fs";
 import path from "path";
+import upload from "../middleware/upload.js";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 
 const router = express.Router();
+
+router.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    const result = await uploadToCloudinary(req.file.buffer);
+
+    res.json({
+      url: result.secure_url,
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      message: "Upload failed",
+      error: err.message,
+    });
+  }
+});
+
 
 // ✅ MUST MATCH FRONTEND
 router.delete("/:id", async (req, res) => {
