@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendSigningEmail = async (email, token) => {
-  const signingUrl = `http://localhost:5173/sign/${token}`;
+  const signingUrl = `${process.env.CLIENT_URL}/sign/${token}`;
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,

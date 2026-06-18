@@ -20,7 +20,7 @@ console.log("EXISTS:", fs.existsSync(req.file.path));
     const newFile = await File.create({
       filename: req.file.filename,
       originalName: req.file.originalname,
-      url: `https://document-signature-api.onrender.com/uploads/${req.file.filename}`,
+      url: `${process.env.BASE_URL}/uploads/${req.file.filename}`,
       path: req.file.path,
       size: req.file.size,
     });
