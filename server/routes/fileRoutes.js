@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
   try {
     const files = await File.find();
 
-    console.log("FILES FOUND:", files);
+    console.log("FILES FOUND:", JSON.stringify(files,null,2));
 
     res.json(files);
   } catch (error) {
