@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AuditTrail from "../components/AuditTrail";
 import { Document, Page, pdfjs } from "react-pdf";
-
+import api from "../api";
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import SignaturePad from "../components/SignaturePad";
@@ -52,7 +52,7 @@ console.log("SIGNATURES:", signatures);
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const res = await axios.get("https://document-signature-api.onrender.com/api/files");
+        const res = await api.get("/api/files");
         setDocs(res.data);
       } catch (error) {
         console.log(error);
@@ -97,13 +97,12 @@ console.log("SIGNATURES:", signatures);
   console.log("PAYLOAD:", payload);
 
   try {
-    const res = await axios.post(
-      "https://document-signature-api.onrender.com/api/signatures",
-      payload,
-       
+    await api.post("/api/signatures", payload);
+    const sigRes = await api.get(
+      `/api/signatures/${selectedDocument._id}`
     );
-setSignatures(res.data);
-    console.log("🟢 RESPONSE:", res.data);
+    setSignatures(sigRes.data);
+    console.log("🟢 RESPONSE:", sigRes.data);
   } catch (err) {
     console.log("🔴 ERROR:", err.response?.data || err.message);
   }
@@ -116,9 +115,7 @@ const deleteDocument = async (id) => {
 
     if (!confirmDelete) return;
 
-    await axios.delete(
-      `https://document-signature-api.onrender.com/api/files/${id}`
-    );
+    await api.delete(`/api/files/${id}`);
 
     // remove from UI instantly
     setDocs((prev) => prev.filter((doc) => doc._id !== id));
@@ -154,19 +151,16 @@ const handleDrop = async (e) => {
   console.log("Dropped:", x, y);
 
   try {
-    const res = await axios.post(
-      "https://document-signature-api.onrender.com/api/signatures",
-      {
-        documentId: selectedDocument._id,
-        x,
-        y,
-        signer: signerName,
-        email: signerEmail,
-      }
-    );
+    await api.post("/api/signatures", {
+      documentId: selectedDocument._id,
+      x,
+      y,
+      signer: signerName,
+      email: signerEmail,
+    });
 
-    const sigRes = await axios.get(
-      `https://document-signature-api.onrender.com/api/signatures/${selectedDocument._id}`
+    const sigRes = await api.get(
+      `/api/signatures/${selectedDocument._id}`
     );
 
     setSignatures(sigRes.data);
@@ -287,7 +281,7 @@ const uploadSignedPDFToCloud = async () => {
       )
     );
 
-    const res = await axios.post("https://document-signature-api.onrender.com/api/pdf/upload-signed-pdf", {
+    const res = await api.post("/api/pdf/upload-signed-pdf", {
       pdfBase64: base64Pdf,
     });
 
@@ -310,9 +304,7 @@ const uploadSignedPDFToCloud = async () => {
 
 const fetchAudit = async (documentId) => {
   try {
-    const res = await axios.get(
-      `https://document-signature-api.onrender.com/api/audit/${documentId}`
-    );
+    const res = await api.get(`/api/audit/${documentId}`);
 
     console.log("AUDIT DATA:", res.data);
     setAuditLogs(res.data);
@@ -328,15 +320,15 @@ const saveSignature = async (image) => {
 
   console.log("IMAGE RECEIVED FROM PAD:", image);
   try {
-    await axios.put(
-      `https://document-signature-api.onrender.com/api/signatures/${selectedSignature._id}/sign`,
+    await api.put(
+      `/api/signatures/${selectedSignature._id}/sign`,
       {
         signatureImage: image,
       }
     );
 
-    const res = await axios.get(
-      `https://document-signature-api.onrender.com/api/signatures/${selectedDocument._id}`
+    const res = await api.get(
+      `/api/signatures/${selectedDocument._id}`
     );
 
     setSignatures(res.data);
@@ -372,10 +364,7 @@ const filteredSignatures =
     formData.append("file", file);
 
     try {
-      const res = await axios.post(
-        "https://document-signature-api.onrender.com/api/files/upload",
-        formData
-      );
+      const res = await api.post("/api/files/upload", formData);
 
       alert("PDF Uploaded Successfully");
 
@@ -393,26 +382,22 @@ const filteredSignatures =
             key={doc._id}
             className="border rounded-lg p-3 mb-3 cursor-pointer hover:shadow-md transition"
             onClick={async () => {
-  const pdfUrl = doc.url.replace(
-  "http://localhost:5000",
-  "https://document-signature-api.onrender.com"
-);
+ const pdfUrl = `${import.meta.env.VITE_API_URL}${doc.url}`;
 console.log("PDF URL:", pdfUrl);
 setSelectedFile(pdfUrl);
   setSelectedDocument(doc);
 
   try {
     // 1️  Get signatures (if you still need them)
-    const sigRes = await axios.get(
-      `https://document-signature-api.onrender.com/api/signatures/${doc._id}`
+    const sigRes = await api.get(
+      `/api/signatures/${doc._id}`
     );
 
     setSignatures(sigRes.data);
 
     // 2️  Get audit logs (NEW API)
-    const auditRes = await axios.get(
-      `https://document-signature-api.onrender.com/api/audit/${doc._id}`
-    );
+    const auditRes = await api.get(`/api/audit/${doc._id}`);
+    setAuditLogs(auditRes.data);
 
     setAuditLogs(auditRes.data);
 
@@ -430,9 +415,7 @@ setSelectedFile(pdfUrl);
           const confirmDelete = window.confirm("Delete this document?");
           if (!confirmDelete) return;
 
-          axios.delete(
-            `https://document-signature-api.onrender.com/api/files/${doc._id}`
-          )
+          api.delete(`/api/files/${doc._id}`)
           .then(() => {
             // remove from UI instantly
             setDocs((prev) =>
@@ -662,15 +645,13 @@ return (
 
  
       try {
-        await axios.put(
-          `https://document-signature-api.onrender.com/api/signatures/${sig._id}/reject`,
-          {reason:"No reason provided"
-
-          }
+        await api.put(
+          `/api/signatures/${sig._id}/reject`,
+          { reason: "No reason provided" }
         );
 
-        const res = await axios.get(
-          `https://document-signature-api.onrender.com/api/signatures/${selectedDocument._id}`
+        const res = await api.get(
+          `/api/signatures/${selectedDocument._id}`
         );
 
         setSignatures(res.data);
@@ -716,8 +697,8 @@ return (
     try {
       const latestSig = signatures[signatures.length - 1];
 
-      await axios.post(
-        `https://document-signature-api.onrender.com/api/signatures/${latestSig._id}/send-email`
+      await api.post(
+        `/api/signatures/${latestSig._id}/send-email`
       );
 
       alert("Email Sent!");
