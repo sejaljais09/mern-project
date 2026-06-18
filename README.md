@@ -56,7 +56,7 @@ A full-stack MERN application that allows users to upload PDF documents, place s
 ### Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone <(https://github.com/sejaljais09/mern-project.git)>
 cd mern-project
 ```
 
@@ -100,21 +100,22 @@ VITE_API_URL=
 
 ## Screenshots
 
-### Login Page
 
-(Add Screenshot)
 
 ### Dashboard
 
-(Add Screenshot)
+<img width="2234" height="1530" alt="image" src="https://github.com/user-attachments/assets/32d1df66-042b-414e-a732-9a8e2c9bffc1" />
+
 
 ### PDF Preview
 
-(Add Screenshot)
+<img width="1502" height="1524" alt="image" src="https://github.com/user-attachments/assets/954a4baf-b6ce-441f-bb22-39e809929c50" />
+
 
 ### Audit Trail
 
-(Add Screenshot)
+<img width="1202" height="530" alt="image" src="https://github.com/user-attachments/assets/15b74293-cad5-422b-b6da-6ec4c63ce21d" />
+
 
 ## Future Enhancements
 
