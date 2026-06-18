@@ -8,10 +8,11 @@ const router = express.Router();
 // ✅ MUST MATCH FRONTEND
 router.delete("/:id", async (req, res) => {
   try {
+    console.log("✅ documentRoutes LOADED");
     console.log("DELETE HIT:", req.params.id);
 
     const doc = await Document.findById(req.params.id);
-
+    console.log("FOUND DOC:", doc);
     if (!doc) {
       return res.status(404).json({ message: "Document not found" });
     }
