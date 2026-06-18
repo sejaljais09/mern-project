@@ -370,28 +370,31 @@ const filteredSignatures =
 
       setDocs((prev) => [...prev, res.data.file]);
     } catch (err) {
-  console.log("UPLOAD ERROR:", err);
-  console.log("RESPONSE:", err.response?.data);
+  console.log("FULL ERROR:", err);
+  console.log("STATUS:", err.response?.status);
+  console.log("DATA:", err.response?.data);
+  console.log("MESSAGE:", err.response?.data?.message);
+  console.log("ERROR:", err.response?.data?.error);
   alert("Upload Failed");
 }
   }}
 />
 
-        {docs.map((doc) => (
+{docs.map((doc) => (
           <div
             key={doc._id}
             className="border rounded-lg p-3 mb-3 cursor-pointer hover:shadow-md transition"
             onClick={async () => {
 
-        const pdfUrl =
-  doc.url.startsWith("http")
-    ? doc.url
-    : `${import.meta.env.VITE_API_URL}${doc.url}`;
+        //const pdfUrl =
+  // doc.url.startsWith("http")
+  //   ? doc.url
+  //   : `${import.meta.env.VITE_API_URL}${doc.url}`;
 
-setSelectedFile(pdfUrl);
-console.log("PDF URL:", pdfUrl);
-console.log("doc.url =", doc.url);
-setSelectedFile(pdfUrl);
+setSelectedFile(doc.url);
+// console.log("PDF URL:", pdfUrl);
+// console.log("doc.url =", doc.url);
+// setSelectedFile(pdfUrl);
   setSelectedDocument(doc);
 
   try {
