@@ -2,6 +2,7 @@ import fs from "fs";
 import express from "express";
 import upload from "../middleware/upload.js";
 import File from "../models/file.js";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 
 const router = express.Router();
 
@@ -9,20 +10,20 @@ const router = express.Router();
 // 📤 UPLOAD FILE + SAVE TO DB
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
 
-    console.log("FILE:", req.file);
-console.log("PATH:", req.file.path);
-console.log("EXISTS:", fs.existsSync(req.file.path));
+    console.log("FILE:", req.file); // 👈 yaha
+
+    const result = await uploadToCloudinary(req.file.buffer);
+
+    console.log("CLOUDINARY RESULT:", result); // 👈 aur yaha
 
     const newFile = await File.create({
-      filename: req.file.filename,
+      filename: result.public_id,
       originalName: req.file.originalname,
-      url: req.file.path || req.file.secure_url || `${process.env.BASE_URL}/uploads/${req.file.filename}`,
-      path: req.file.path || req.file.secure_url || `${process.env.BASE_URL}/uploads/${req.file.filename}`,
+      url: result.secure_url,
+      path: result.secure_url,
       size: req.file.size,
+      mimetype: req.file.mimetype,
     });
 
     res.json({
@@ -31,6 +32,7 @@ console.log("EXISTS:", fs.existsSync(req.file.path));
     });
 
   } catch (error) {
+    console.log("UPLOAD ERROR:", error); // 👈 yaha bhi
     res.status(500).json({ error: error.message });
   }
 });
