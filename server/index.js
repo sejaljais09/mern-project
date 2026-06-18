@@ -39,7 +39,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morgan("dev"));
 app.use("/api/signatures", signatureRoutes);
 app.use("/api/pdf", pdfExportRoutes);
-app.use("/uploads", express.static("uploads"));
+//app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/signature", signatureRoutes);
@@ -102,6 +102,7 @@ app.post("/api/docs/upload", upload.single("pdf"), async (req, res) => {
       filename: req.file.filename,
       originalName: req.file.originalname,
       path: req.file.path,
+      url: req.file.url,
       mimetype: req.file.mimetype,
       size: req.file.size,
     });

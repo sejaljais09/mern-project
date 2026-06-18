@@ -20,8 +20,8 @@ console.log("EXISTS:", fs.existsSync(req.file.path));
     const newFile = await File.create({
       filename: req.file.filename,
       originalName: req.file.originalname,
-      url: `${process.env.BASE_URL}/uploads/${req.file.filename}`,
-      path: req.file.path,
+      url: req.file.path || req.file.secure_url || `${process.env.BASE_URL}/uploads/${req.file.filename}`,
+      path: req.file.path || req.file.secure_url || `${process.env.BASE_URL}/uploads/${req.file.filename}`,
       size: req.file.size,
     });
 

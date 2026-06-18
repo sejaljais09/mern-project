@@ -8,36 +8,27 @@ router.post("/upload-signed-pdf", async (req, res) => {
   try {
     const { pdfBase64 } = req.body;
 
-    const uploadStream = cloudinary.uploader.upload_stream(
-  {
-    resource_type: "raw",
-    folder: "signed-pdfs",
-    chunk_size: 6000000,
-    format: "pdf",
-  },
-  (error, result) => {
-    console.log("CLOUDINARY ERROR:", error);
-    console.log("CLOUDINARY RESULT:", result);
-
-    if (error) {
-      return res.status(500).json(error);
+    if (!pdfBase64) {
+      return res.status(400).json({ error: "Missing pdfBase64 in request body" });
     }
 
+    const dataUri = `data:application/pdf;base64,${pdfBase64}`;
+
+    const result = await cloudinary.uploader.upload(dataUri, {
+      resource_type: "raw",
+      folder: "signed-pdfs",
+      public_id: `signed-${Date.now()}`,
+      overwrite: true,
+    });
+
+    console.log("CLOUDINARY RESULT:", result);
     res.json(result);
-  }
-);
-
-    streamifier
-      .createReadStream(Buffer.from(pdfBase64, "base64"))
-      .pipe(uploadStream);
-
   } catch (err) {
-  console.log("PDF EXPORT ERROR:", err);
-
-  res.status(500).json({
-    error: err.message,
-  });
-}
+    console.log("PDF EXPORT ERROR:", err);
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
 
 export default router;
