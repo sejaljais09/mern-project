@@ -50,4 +50,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// 📤 DELETE A FILE AND ITS UPLOADED ASSET
+router.delete("/:id", async (req, res) => {
+  try {
+    const file = await File.findById(req.params.id);
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    if (fs.existsSync(file.path)) {
+      fs.unlinkSync(file.path);
+    }
+
+    await File.findByIdAndDelete(req.params.id);
+    res.json({ message: "File deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
