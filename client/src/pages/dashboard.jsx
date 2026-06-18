@@ -134,15 +134,12 @@ const deleteDocument = async (id) => {
   }
 };
 
-
 const handleDrop = async (e) => {
   e.preventDefault();
   
   if (!selectedDocument) return;
 
   const rect = e.currentTarget.getBoundingClientRect();
-
-  
   const x = (e.clientX - rect.left) / rect.width;
  const scrollTop = window.scrollY;
   const y =
@@ -168,9 +165,6 @@ const handleDrop = async (e) => {
     console.log(error);
   }
 };
-
-
-
 
 const downloadSignedPDF = async () => {
   try {
