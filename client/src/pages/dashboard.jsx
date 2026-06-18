@@ -229,7 +229,7 @@ const downloadSignedPDF = async () => {
 
 const copySigningLink = (token) => {
   console.log("copying token",token);
-  const link = `http://localhost:5173/sign/${token}`;
+  const link = `${window.location.origin}/sign/${token}`;
 
   navigator.clipboard.writeText(link);
 
