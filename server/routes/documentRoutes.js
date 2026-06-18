@@ -11,11 +11,20 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const result = await uploadToCloudinary(req.file.buffer);
 
-    res.json({
+    const doc = await Document.create({
+      originalName: req.file.originalname,
       url: result.secure_url,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+    });
+
+    res.json({
+      message: "Uploaded successfully",
+      document: doc,
     });
 
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: "Upload failed",
       error: err.message,
