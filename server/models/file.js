@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 
 const fileSchema = new mongoose.Schema({
-  filename: {
-    type: String,
-    required: true,
-  },
+
   originalName: {
     type: String,
   },
@@ -12,13 +9,9 @@ const fileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  path: {
-    type: String,
-    required: true,
-  },
-  size: {
-    type: Number,
-  },
+  size: Number,
+
+  mimetype: String,
   uploadedAt: {
     type: Date,
     default: Date.now,
