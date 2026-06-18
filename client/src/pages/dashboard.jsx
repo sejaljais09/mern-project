@@ -382,8 +382,16 @@ const filteredSignatures =
             key={doc._id}
             className="border rounded-lg p-3 mb-3 cursor-pointer hover:shadow-md transition"
             onClick={async () => {
- const pdfUrl = `${import.meta.env.VITE_API_URL}${doc.url}`;
+
+        let pdfUrl = doc.url;
+
+       if (!doc.url.startsWith("http")) {
+       pdfUrl = `${import.meta.env.VITE_API_URL}${doc.url}`;
+     }
+
+setSelectedFile(pdfUrl);
 console.log("PDF URL:", pdfUrl);
+console.log("doc.url =", doc.url);
 setSelectedFile(pdfUrl);
   setSelectedDocument(doc);
 
