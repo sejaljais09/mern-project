@@ -39,7 +39,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morgan("dev"));
 app.use("/api/signatures", signatureRoutes);
 app.use("/api/pdf", pdfExportRoutes);
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/signature", signatureRoutes);
