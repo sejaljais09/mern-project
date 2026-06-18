@@ -383,11 +383,10 @@ const filteredSignatures =
             className="border rounded-lg p-3 mb-3 cursor-pointer hover:shadow-md transition"
             onClick={async () => {
 
-        let pdfUrl = doc.url;
-
-       if (!doc.url.startsWith("http")) {
-       pdfUrl = `${import.meta.env.VITE_API_URL}${doc.url}`;
-     }
+        const pdfUrl =
+  doc.url.startsWith("http")
+    ? doc.url
+    : `${import.meta.env.VITE_API_URL}${doc.url}`;
 
 setSelectedFile(pdfUrl);
 console.log("PDF URL:", pdfUrl);
