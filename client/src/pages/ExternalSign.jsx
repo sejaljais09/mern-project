@@ -17,7 +17,7 @@ function ExternalSign() {
     console.log("TOKEN FROM URL:", token);
 
     const res = await axios.get(
-      `http://localhost:5000/api/signatures/token/${token}`
+      `https://document-signature-api.onrender.com/api/signatures/token/${token}`
     );
 
     console.log("API RESPONSE:", res.data);
@@ -34,7 +34,7 @@ function ExternalSign() {
   const saveSignature = async (image) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/signatures/${signature._id}/sign`,
+        `https://document-signature-api.onrender.com/api/signatures/${signature._id}/sign`,
         {
           signatureImage: image,
         }

@@ -2,24 +2,39 @@ import React from "react";
 
 const AuditTrail = ({ logs = [] }) => {
   return (
-    <div>
+    <div style={{ padding: "10px" }}>
       {logs.map((log, index) => {
-        const safeDate = log.createdAt
-          ? new Date(log.createdAt).toLocaleString()
+        const time = log.timestamp
+          ? new Date(log.timestamp).toLocaleString()
           : "N/A";
 
         return (
-          <div key={index} style={{ marginBottom: "15px" }}>
-            <div>User: {log.user || "Unknown"}</div>
-            <div>Email: {log.email || "N/A"}</div>
-            <div>IP: {log.ip || "N/A"}</div>
-            <div>Action: {log.action || "N/A"}</div>
-
+          <div
+            key={index}
+            style={{
+              padding: "8px",
+              marginBottom: "8px",
+              borderLeft: "3px solid #ccc",
+              background: "#f9f9f9",
+              borderRadius: "5px",
+              fontSize: "12px",
+            }}
+          >
             <div>
-              Time: {safeDate}
+              <b>Action:</b> {log.action}
             </div>
 
-            <hr />
+            <div>
+              <b>User:</b> {log.user}
+            </div>
+
+            <div>
+              <b>IP:</b> {log.ip}
+            </div>
+
+            <div>
+              <b>Time:</b> {time}
+            </div>
           </div>
         );
       })}
